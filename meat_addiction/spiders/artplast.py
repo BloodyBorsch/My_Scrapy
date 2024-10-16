@@ -6,12 +6,17 @@ from items import MeatAddictionItem
 class ArtplastSpider(scrapy.Spider):
     name = "artplast"
     allowed_domains = ["artplast.ru"]
-    start_urls = ["https://www.artplast.ru/catalog/korobki-dly-piccy/"]
+    #start_urls = ["https://www.artplast.ru/catalog/korobki-dly-piccy/"]
 
-    def parse(self, response: HtmlResponse):
-        next_page = response.xpath('//a[@class="relative flex items-center space-x-3 duration-200 group text-gray hover:text-body"]').get()
-        if next_page:
-            yield response.follow(next_page, callback=self.parse)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.start_urls = [f"https://www.artplast.ru{kwargs.get("query")}"]
+
+    def parse(self, response: HtmlResponse):    
+        page = response.xpath('//a[@class="relative flex items-center space-x-3 duration-200 group text-gray hover:text-body"]/span[contains(text(), "Вперед")]/ancestor::a/@href').get()
+        if page:
+            print(page)
+            yield response.follow(page, callback=self.parse)
 
         links = response.xpath('//div[contains(@x-data, "price_block")]//div[@class="relative"]/a/@href').getall()
         for link in links:
