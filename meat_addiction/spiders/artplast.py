@@ -1,6 +1,7 @@
 import scrapy
 from scrapy.http import HtmlResponse
 from items import MeatAddictionItem
+from scrapy.loader import ItemLoader
 
 
 class ArtplastSpider(scrapy.Spider):
@@ -23,7 +24,13 @@ class ArtplastSpider(scrapy.Spider):
             yield response.follow(link, callback=self.items_parse)    
 
     def items_parse(self, response: HtmlResponse):
-        name = response.xpath('.//ul[contains(@class, "space-y-3")]/li[contains(@class, "relative flex items-end")]/span/text()').getall()
-        image = response.xpath('//img[contains(@itemprop, "image")]/@src').getall()
-        url = response.url
-        yield MeatAddictionItem(name=name, image=image, url=url)
+        # name = response.xpath('.//ul[contains(@class, "space-y-3")]/li[contains(@class, "relative flex items-end")]/span/text()').getall()
+        # image = response.xpath('//img[contains(@itemprop, "image")]/@src').getall()
+        # url = response.url
+        # yield MeatAddictionItem(name=name, image=image, url=url)
+
+        loader = ItemLoader(item=MeatAddictionItem(), response=response)
+        loader.add_xpath("name", './/ul[contains(@class, "space-y-3")]/li[contains(@class, "relative flex items-end")]/span/text()')
+        loader.add_xpath("image", '//img[contains(@itemprop, "image")]/@src')
+        loader.add_xpath("url", response.url)        
+        yield loader.load_item()

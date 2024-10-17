@@ -11,6 +11,7 @@ BOT_NAME = "meat_addiction"
 
 SPIDER_MODULES = ["meat_addiction.spiders"]
 NEWSPIDER_MODULE = "meat_addiction.spiders"
+IMAGES_STORE = "images"
 LOG_ENABLED = False
 LOG_LEVEL = "DEBUG"
 
@@ -66,6 +67,7 @@ COOKIES_ENABLED = True
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    "meat_addiction.pipelines.MeatAddictionPipeline": 300,
+   "meat_addiction.pipelines.GoodsImagesPipeline": 200,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
